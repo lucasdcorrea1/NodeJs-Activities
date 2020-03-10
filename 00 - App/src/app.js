@@ -1,27 +1,35 @@
+  
 'use strict'
 require('dotenv/config');
 
 const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const test = require('./routes/teste');
-
-const db = require('./config/database');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false}));
+app.use(cors());
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/test', test);
+//Carregando as Models
+require('./app/models/Provider');
 
-app.listen(3333);
+// Carrega as rotas
+const copyright = require('./routes/Copyright');
+const provider = require('./routes/Provider');
+
+app.use(function (req, res, next) {
+  var origin = req.get('origin'); 
+  res.header('Access-Control-Allow-Origin', origin);
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+app.use('/', copyright);
+app.use('/provider', provider);
+
+const PORT = process.env.PORT || 3333;
+app.listen(PORT, () => {
+});

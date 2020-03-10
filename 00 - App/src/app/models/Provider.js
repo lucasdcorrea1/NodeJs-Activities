@@ -1,6 +1,6 @@
-const mongoose = require('Mongoose');
+const mongoose = require('mongoose');
 
-const providerSchema = mongoose.Schema({
+const providerSchema = new mongoose.Schema({
     razao_social: {
         type: String,
         required: true
@@ -29,4 +29,5 @@ const providerSchema = mongoose.Schema({
     }
 });
 
-module.export = mongoose.model('Provider', providerSchema, 'providers');
+const Provider = mongoose.model('Provider', providerSchema, 'providers');
+module.export = Provider;
